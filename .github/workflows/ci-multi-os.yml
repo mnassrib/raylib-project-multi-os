@@ -103,13 +103,14 @@ jobs:
           if [[ -f "$FILE" ]]; then
             echo "file=$FILE" >> $GITHUB_OUTPUT
           else
-            echo "Fichier manquant, skip release"
+            echo "Fichier manquant, annulation de la publication"
             exit 1
           fi
 
 
 
-      - name: Publier la release (tag)
+
+      - name: Publier la release GitHub
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
@@ -118,5 +119,6 @@ jobs:
             ${{ steps.filecheck.outputs.file }}#${{ steps.project.outputs.name }}-${{ steps.osname.outputs.name }}${{ steps.osname.outputs.name == 'windows' && '.exe' || '' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
 
