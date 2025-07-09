@@ -82,7 +82,7 @@ jobs:
           echo "Vérification de l'exécutable : $bin"
           [ -f "$bin" ] && echo "Exécutable généré" || (echo "Manquant" && exit 1)
 
-      - name: Publier la release (tag uniquement)
+      - name: Publier la release avec l'exécutable
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
@@ -90,3 +90,4 @@ jobs:
           files: build/${{ steps.project.outputs.name }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
