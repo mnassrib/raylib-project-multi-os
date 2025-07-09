@@ -118,10 +118,10 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           name: "Release ${{ github.ref_name }} - ${{ steps.osname.outputs.name }}"
-          files: |
-            ${{ steps.filecheck.outputs.file }}#${{ steps.project.outputs.name }}-${{ steps.osname.outputs.name }}${{ steps.osname.outputs.name == 'windows' && '.exe' || '' }}
+          files: ${{ steps.filecheck.outputs.file }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
 
 
