@@ -26,7 +26,13 @@ jobs:
       # === Dépendances par OS ===
       - name: Installer Raylib (Linux)
         if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get update && sudo apt-get install -y cmake raylib
+        run: |
+          sudo apt-get install -y cmake gcc libgl1-mesa-dev libx11-dev
+          git clone https://github.com/raysan5/raylib.git
+          cd raylib
+          mkdir build && cd build
+          cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF ..
+          sudo cmake --install . --prefix /usr/local
 
       - name: Installer Raylib (macOS)
         if: matrix.os == 'macos-latest'
