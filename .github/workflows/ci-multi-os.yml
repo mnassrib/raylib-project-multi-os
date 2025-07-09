@@ -37,7 +37,8 @@ jobs:
           cd raylib
           mkdir build && cd build
           cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF ..
-          sudo cmake --install . --prefix /usr/local
+          make
+          sudo make install
 
       - name: Installer Raylib (macOS)
         if: matrix.os == 'macos-latest'
