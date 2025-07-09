@@ -92,12 +92,32 @@ jobs:
           esac
         shell: bash
 
-      - name: Publier la release avec un nom unique
+
+
+      - name: Vérifier que l'exécutable a été généré
+        id: filecheck
+        shell: bash
+        run: |
+          FILE="build/${{ steps.project.outputs.name }}${{ steps.osname.outputs.name == 'windows' && '.exe' || '' }}"
+          echo "Fichier attendu : $FILE"
+          if [[ -f "$FILE" ]]; then
+            echo "file=$FILE" >> $GITHUB_OUTPUT
+          else
+            echo "Fichier manquant, skip release"
+            exit 1
+          fi
+
+
+
+
+
+      - name: Publier la release (tag)
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           name: "Release ${{ github.ref_name }} - ${{ steps.osname.outputs.name }}"
           files: >
-            build/${{ steps.project.outputs.name }}${{ steps.osname.outputs.name == 'windows' && '.exe' || '' }}#${{ steps.project.outputs.name }}-${{ steps.osname.outputs.name }}${{ steps.osname.outputs.name == 'windows' && '.exe' || '' }}
+            ${{ steps.filecheck.outputs.file }}#${{ steps.project.outputs.name }}-${{ steps.osname.outputs.name }}${{ steps.osname.outputs.name == 'windows' && '.exe' || '' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
