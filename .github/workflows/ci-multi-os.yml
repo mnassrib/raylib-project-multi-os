@@ -82,47 +82,11 @@ jobs:
           echo "Vérification de l'exécutable : $bin"
           [ -f "$bin" ] && echo "Exécutable généré" || (echo "Manquant" && exit 1)
 
-      - name: Déterminer l'OS simplifié
-        id: osname
-        run: |
-          case "${{ matrix.os }}" in
-            ubuntu*)  echo "name=linux" >> $GITHUB_OUTPUT ;;
-            macos*)   echo "name=macos" >> $GITHUB_OUTPUT ;;
-            windows*) echo "name=windows" >> $GITHUB_OUTPUT ;;
-          esac
-        shell: bash
-
-      - name: Contenu de build/
-        run: ls -lh build
-
-      - name: Vérifier que l'exécutable existe
-        id: filecheck
-        shell: bash
-        run: |
-          FILE="build/${{ steps.project.outputs.name }}${{ steps.osname.outputs.name == 'windows' && '.exe' || '' }}"
-          echo "Fichier attendu : $FILE"
-          if [[ -f "$FILE" ]]; then
-            echo "Trouvé : $FILE"
-            echo "file=$FILE" >> $GITHUB_OUTPUT
-          else
-            echo "Fichier manquant : $FILE"
-            exit 1
-          fi
-
-
-
-
-
-      - name: Publier la release GitHub
+      - name: Publier la release (tag uniquement)
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          name: "Release ${{ github.ref_name }} - ${{ steps.osname.outputs.name }}"
-          files: ${{ steps.filecheck.outputs.file }}
+          name: "Release ${{ github.ref_name }} - ${{ matrix.os }}"
+          files: build/${{ steps.project.outputs.name }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
-
-
-
