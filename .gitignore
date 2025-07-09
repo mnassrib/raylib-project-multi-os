@@ -1,0 +1,3 @@
+# Ignore le dossier de build CMake
+/build/
+*.sh
