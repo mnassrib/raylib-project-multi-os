@@ -72,11 +72,13 @@ jobs:
       - name: Créer le dossier build
         run: mkdir build
 
-      - name: Configurer le projet avec CMake
-        run: >
-          cmake -S . -B build
-          -DCMAKE_BUILD_TYPE=Release
-          ${{ matrix.os == 'windows-latest' && '-G "MinGW Makefiles" -DCMAKE_PREFIX_PATH=C:/raylib' || '' }}
+      - name: Configurer le projet avec CMake (Windows)
+        if: matrix.os == 'windows-latest'
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -G "MinGW Makefiles" -DCMAKE_PREFIX_PATH="C:/raylib"
+
+      - name: Configurer le projet avec CMake (Linux/macOS)
+        if: matrix.os != 'windows-latest'
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 
       - name: Compiler le projet
         run: cmake --build build --config Release
