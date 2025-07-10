@@ -1,113 +1,168 @@
 # 🎮 Raylib Project (Multi-OS)
 
-Ce projet montre comment structurer un projet en langage C avec la bibliothèque [Raylib](https://www.raylib.com/) sous Windows, en utilisant **CMake** et **MinGW-w64**. Il inclut également un workflow GitHub Actions pour la compilation automatique sous Windows.
+Ce projet montre comment structurer un projet C avec la bibliothèque [Raylib](https://www.raylib.com/), en utilisant **CMake**, avec une prise en charge complète sur **Windows**, **macOS** et **Linux**.
+
+Il s’appuie sur un workflow GitHub Actions **multiplateforme** pour compiler automatiquement le projet à chaque mise à jour.
 
 ---
 
 ## 📁 Structure du projet
 
 ```
-
 raylib-project-multi-os/
-├── CMakeLists.txt           # Configuration du projet (CMake)
-├── src/                     # Fichiers source (.c)
+├── CMakeLists.txt                 # Configuration CMake
+├── src/                           # Fichiers source (.c)
 │   ├── main.c
 │   ├── player.c
 │   └── utils.c
-├── include/                 # Fichiers d'en-tête (.h)
+├── include/                       # Fichiers d'en-tête (.h)
 │   ├── player.h
 │   └── utils.h
-├── build/                   # Dossier de compilation (généré)
+├── build/                         # Répertoire généré lors de la compilation
 └── .github/
     └── workflows/
-        └── ci-multi-os.yml   # GitHub Actions (multi-os)
-
-````
-
----
-
-## ⚙️ Compilation sous Windows
-
-### 📌 Prérequis
-
-- [CMake](https://cmake.org/download/) 
-- [MinGW-w64](https://www.mingw-w64.org/)
-- [Chocolatey](https://chocolatey.org/) (recommandé pour l’installation automatisée)
-- Raylib compilée localement dans `C:/raylib`
-
-> 💡 Raylib ne s’installe pas via `choco` : vous devez la **télécharger manuellement** ou utiliser le [build précompilé ici](https://github.com/raysan5/raylib/releases)
-
----
-
-### 🧰 Étapes de configuration
-
-1. **Installer Chocolatey (si ce n’est pas déjà fait)**  
-   PowerShell (en mode administrateur) :
-   ```powershell
-   Set-ExecutionPolicy Bypass -Scope Process -Force
-   iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex
-   ```
-
-2. **Installer MinGW et CMake**
-
-   ```powershell
-   choco install mingw -y
-   choco install cmake -y --installargs 'ADD_CMAKE_TO_PATH=System'
-   ```
-
-3. **Compiler et installer Raylib**
-
-   ```cmd
-   git clone https://github.com/raysan5/raylib.git
-   cd raylib
-   mkdir build && cd build
-   cmake -G "MinGW Makefiles" -DBUILD_EXAMPLES=OFF ..
-   mingw32-make
-   cmake --install . --prefix "C:/raylib"
-   ```
-
----
-
-## 🚀 Compilation du projet
-
-```cmd
-git clone https://github.com/votre-utilisateur/raylib-project-multi-os.git
-cd raylib-project-multi-os
-mkdir build && cd build
-cmake -G "MinGW Makefiles" -DCMAKE_PREFIX_PATH="C:/raylib" ..
-mingw32-make
-.\raylib_project.exe
+        └── ci-cross-platform.yml  # GitHub Actions (Windows + Linux + macOS)
 ```
 
 ---
 
-## ✅ Intégration Continue
+## ⚙️ Compilation locale
 
-Ce projet est automatiquement compilé sous Windows via GitHub Actions à chaque `push` :
+### 🔧 Prérequis communs
 
-![CI Status](https://github.com/mnassrib/raylib-project-multi-os/actions/workflows/ci-multi-os.yml/badge.svg)
-
----
-
-## 🚀 Télécharger l’exécutable précompilé
-
-Après chaque publication (tag Git), une version précompilée de l'exécutable est disponible :
-
-1. Accède à la page des **Releases** ici :
-   🔗 [https://github.com/mnassrib/raylib-project-multi-os/releases](https://github.com/mnassrib/raylib-project-multi-os/releases)
-2. Télécharge le fichier **raylib\_project** (ou `.exe` selon l’OS) de la dernière version.
-3. Exécute directement en local le programme sans recompiler.
+* [CMake](https://cmake.org/download/)
+* [Raylib](https://www.raylib.com/)
+* Compilateur compatible C99 (`gcc`, `clang`, `MinGW`...)
 
 ---
 
-## 📄 Ressources utiles
+### 🪟 Windows
+
+#### 📦 Installation rapide (avec Chocolatey)
+
+```powershell
+choco install mingw -y
+choco install cmake -y --installargs 'ADD_CMAKE_TO_PATH=System'
+```
+
+#### 📥 Installer Raylib
+
+```cmd
+git clone https://github.com/raysan5/raylib.git
+cd raylib
+mkdir build && cd build
+cmake -G "MinGW Makefiles" -DBUILD_EXAMPLES=OFF ..
+mingw32-make
+cmake --install . --prefix "C:/raylib"
+```
+
+#### 🛠️ Compiler le projet
+
+```cmd
+git clone https://github.com/mnassrib/raylib-project-multi-os.git
+cd raylib-project-multi-os
+mkdir build && cd build
+cmake -G "MinGW Makefiles" -DCMAKE_PREFIX_PATH="C:/raylib" ..
+mingw32-make
+.\raylib_project_multi_os.exe
+```
+
+---
+
+### 🍎 macOS
+
+#### 📦 Installation via Homebrew
+
+```bash
+brew install cmake raylib
+```
+
+#### 🛠️ Compiler le projet
+
+```bash
+git clone https://github.com/mnassrib/raylib-project-multi-os.git
+cd raylib-project-multi-os
+mkdir build && cd build
+cmake ..
+make
+./raylib_project_multi_os
+```
+
+---
+
+### 🐧 Linux (Ubuntu/WSL)
+
+#### 📦 Installer les dépendances
+
+```bash
+sudo apt update
+sudo apt install -y cmake build-essential \
+libasound2-dev libx11-dev libxcursor-dev \
+libxrandr-dev libxi-dev libgl1-mesa-dev \
+libxinerama-dev libxss-dev libwayland-dev \
+libpulse-dev libxext-dev git
+```
+
+#### 📥 Compiler Raylib
+
+```bash
+git clone https://github.com/raysan5/raylib.git
+cd raylib
+mkdir build && cd build
+cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF ..
+make
+sudo make install
+```
+
+#### 🛠️ Compiler le projet
+
+```bash
+git clone https://github.com/mnassrib/raylib-project-multi-os.git
+cd raylib-project-multi-os
+mkdir build && cd build
+cmake ..
+make
+./raylib_project_multi_os
+```
+
+---
+
+## ✅ Intégration Continue (GitHub Actions)
+
+Ce dépôt est compilé automatiquement à chaque `push` ou `pull request` sur :
+
+* 🪟 **Windows**
+* 🍎 **macOS**
+* 🐧 **Linux**
+
+| Plateforme | Statut                                                                                                                        |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| 🪟 Windows | ![Windows](https://github.com/mnassrib/raylib-project-multi-os/actions/workflows/ci-cross-platform.yml/badge.svg?branch=main) |
+| 🍎 macOS   | ![macOS](https://github.com/mnassrib/raylib-project-multi-os/actions/workflows/ci-cross-platform.yml/badge.svg?branch=main)   |
+| 🐧 Linux   | ![Linux](https://github.com/mnassrib/raylib-project-multi-os/actions/workflows/ci-cross-platform.yml/badge.svg?branch=main)   |
+
+---
+
+## 🚀 Télécharger l'exécutable précompilé
+
+Une release est générée automatiquement à chaque **tag Git** (ex. : `v1.2.0`).
+
+1. Rendez-vous sur la page [Releases](https://github.com/mnassrib/raylib-project-multi-os/releases)
+2. Téléchargez le fichier `.exe`, `.app`, ou exécutable selon votre OS
+3. Lancez-le directement sans recompiler
+
+---
+
+## 🧠 Ressources utiles
 
 * [Raylib — Site officiel](https://www.raylib.com/)
 * [MinGW-w64](https://www.mingw-w64.org/)
-* [CMake Documentation](https://cmake.org/documentation/)
+* [Homebrew pour macOS](https://brew.sh)
+* [CMake — Documentation](https://cmake.org/documentation/)
+* [GitHub Actions](https://docs.github.com/en/actions)
 
 ---
 
 ## 📜 Licence
 
-Ce projet est librement utilisable à des fins pédagogiques et de formation.
+Ce projet est librement réutilisable à des fins pédagogiques et d’apprentissage.
