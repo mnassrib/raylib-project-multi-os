@@ -70,6 +70,7 @@ jobs:
 
       # === Configuration et Build ===
       - name: Nettoyage du dossier build
+        shell: bash
         run: rm -rf build
 
       - name: Créer le dossier build
