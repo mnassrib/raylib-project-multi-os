@@ -69,6 +69,9 @@ jobs:
           cmake --install . --prefix "C:/raylib"
 
       # === Configuration et Build ===
+      - name: Nettoyage du dossier build
+        run: rm -rf build
+
       - name: Créer le dossier build
         run: mkdir build
 
@@ -89,6 +92,12 @@ jobs:
           bin="build/${{ steps.project.outputs.name }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}"
           echo "Vérification de l'exécutable : $bin"
           [ -f "$bin" ] && echo "Exécutable généré" || (echo "Manquant" && exit 1)
+    
+      - name: Sauvegarder l'exécutable comme artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: "${{ matrix.os }}-binary"
+          path: build/${{ steps.project.outputs.name }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
 
       - name: Publier la release (tag uniquement)
         uses: softprops/action-gh-release@v1
