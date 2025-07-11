@@ -38,7 +38,15 @@ raylib-project-multi-os/
 
 ### 🪟 Windows
 
-#### 📦 Installation rapide (avec Chocolatey)
+#### 📦 Installation de Chocolatey
+
+PowerShell (en mode administrateur) :
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force
+iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex
+```
+
+#### 📦 Installation de MinGW
 
 ```powershell
 choco install mingw -y
@@ -64,7 +72,7 @@ cd raylib-project-multi-os
 mkdir build && cd build
 cmake -G "MinGW Makefiles" -DCMAKE_PREFIX_PATH="C:/raylib" ..
 mingw32-make
-.\raylib_project_multi_os.exe
+.\raylib-project-multi-os.exe
 ```
 
 ---
@@ -85,7 +93,7 @@ cd raylib-project-multi-os
 mkdir build && cd build
 cmake ..
 make
-./raylib_project_multi_os
+./raylib-project-multi-os
 ```
 
 ---
@@ -122,7 +130,7 @@ cd raylib-project-multi-os
 mkdir build && cd build
 cmake ..
 make
-./raylib_project_multi_os
+./raylib-project-multi-os
 ```
 
 ---
