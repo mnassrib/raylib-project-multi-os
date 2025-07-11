@@ -46,7 +46,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force
 iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex
 ```
 
-#### 📦 Installation de MinGW
+#### 📦 Installation de MinGW et CMake
 
 ```powershell
 choco install mingw -y
