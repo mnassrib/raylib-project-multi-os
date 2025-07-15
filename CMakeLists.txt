@@ -14,7 +14,7 @@ include_directories(include)
 
 # === Choix des fichiers source ===
 
-# Utiliser automatiquement tous les fichiers .c dans src/ sinon changer ON par OFF
+# Active la détection automatique des fichiers .c dans src/ (OFF = sélection manuelle)
 option(USE_AUTO_SOURCES "Compiler automatiquement tous les fichiers .c dans src/" ON)
 
 if(USE_AUTO_SOURCES)
@@ -33,29 +33,17 @@ endif()
 
 # === Configuration de Raylib ===
 
-# Si Raylib a été installé dans un répertoire non standard sur Windows
-if(WIN32)
-    # Spécifiez le chemin de Raylib si installé via CMake install/modifier si besoin
-    set(RAYLIB_PATH "C:/raylib")
-    set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${RAYLIB_PATH}")
+# Si l'utilisateur n'a pas déjà défini CMAKE_PREFIX_PATH, on fournit un chemin par défaut (optionnel)
+if(WIN32 AND NOT DEFINED CMAKE_PREFIX_PATH)
+    set(CMAKE_PREFIX_PATH "C:/raylib")
+    message(STATUS "CMAKE_PREFIX_PATH non défini, utilisation du chemin par défaut : C:/raylib")
 endif()
 
 # Détection automatique de Raylib
 find_package(raylib QUIET)
 
-if(raylib_FOUND)
-    message(STATUS "Raylib trouvé via find_package()")
-    target_link_libraries(${PROJECT_NAME} raylib)
-else()
-    message(STATUS "Raylib non trouvé via find_package() - fallback manuel")
-
-    if(WIN32)
-        message(STATUS "Lien manuel avec Raylib pour MinGW")
-        target_link_libraries(${PROJECT_NAME} raylib)
-    else()
-        message(SEND_ERROR "Raylib non trouvé et aucun fallback disponible (non-Windows)")
-    endif()
-endif()
+message(STATUS "Raylib trouvé via find_package()")
+target_link_libraries(${PROJECT_NAME} raylib)
 
 
 # === Lien avec bibliothèques système selon l'OS ===
